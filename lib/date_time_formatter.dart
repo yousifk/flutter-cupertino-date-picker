@@ -198,7 +198,17 @@ class DateTimeFormatter {
 
   /// format number, if the digit count is 2, will pad zero on the left
   static String _formatNumber(int value, String format, String unit) {
-    if (format.contains('$unit$unit')) {
+        if (format.contains('$unit$unit$unit') && format.contains("H")) {
+      if (value == 0)
+        return format.replaceAll('$unit$unit$unit', "12 ص");
+      else if (value < 12)
+        return format.replaceAll('$unit$unit$unit', value.toString() + " ص");
+      else if (value == 12)
+        return format.replaceAll('$unit$unit$unit', "12" + " م");
+      else
+        return format.replaceAll('$unit$unit$unit', (value - 12).toString() + " م");
+    }
+    else if (format.contains('$unit$unit')) {
       return format.replaceAll('$unit$unit', value.toString().padLeft(2, '0'));
     } else if (format.contains('$unit')) {
       return format.replaceAll('$unit', value.toString());
