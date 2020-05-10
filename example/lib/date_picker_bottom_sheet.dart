@@ -185,6 +185,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
   void _showDatePicker() {
     DatePicker.showDatePicker(
       context,
+      onMonthChangeStartWithFirstDate: true,
       pickerTheme: DateTimePickerTheme(
         showTitle: _showTitle,
         confirm: Text('custom Done', style: TextStyle(color: Colors.red)),
@@ -195,9 +196,8 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
       initialDateTime: _dateTime,
       dateFormat: _format,
       locale: _locale,
-      onCancel: () {
-        debugPrint('onCancel');
-      },
+      onClose: () => print("----- onClose -----"),
+      onCancel: () => print('onCancel'),
       onChange: (dateTime, List<int> index) {
         setState(() {
           _dateTime = dateTime;

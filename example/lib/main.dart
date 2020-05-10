@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:example/date_picker_bottom_sheet.dart';
-import 'package:example/date_picker_in_page.dart';
-import 'package:example/datetime_picker_bottom_sheet.dart';
-import 'package:example/datetime_picker_in_page.dart';
-import 'package:example/time_picker_bottom_sheet.dart';
-import 'package:example/time_picker_in_page.dart';
+import './date_picker_bottom_sheet.dart';
+import './date_picker_in_page.dart';
+import './datetime_picker_bottom_sheet.dart';
+import './datetime_picker_in_page.dart';
+import './time_picker_bottom_sheet.dart';
+import './time_picker_in_page.dart';
 
 void main() => runApp(MyApp());
 

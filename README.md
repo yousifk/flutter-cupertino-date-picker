@@ -15,7 +15,7 @@ Add this to you package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_cupertino_date_picker: ^1.0.0+1
+  flutter_cupertino_date_picker: ^1.0.25
 ```
 
 #### 2\. Install
@@ -31,7 +31,7 @@ $ flutter packages get
 Import in Dart code:
 
 ```dart
-import 'packages:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
+import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 ```
 
 #### 4\. Display DatePicker
@@ -50,6 +50,7 @@ import 'packages:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dar
 /// pickerMode: [DateTimePickerMode] display mode: date(DatePicker)、time(TimePicker)、datetime(DateTimePicker)
 /// pickerTheme: [DateTimePickerTheme] the theme of date time picker
 /// onCancel: [DateVoidCallback] pressed title cancel widget event
+/// onClose: [DateVoidCallback] date picker closed event
 /// onChange: [DateValueCallback] selected date time changed event
 /// onConfirm: [DateValueCallback] pressed title confirm widget event
 DatePicker.showDatePicker(
@@ -62,6 +63,7 @@ DatePicker.showDatePicker(
   DateTimePickerMode pickerMode: DateTimePickerMode.date,
   DateTimePickerTheme pickerTheme: DatePickerTheme.Default,
   DateVoidCallback onCancel,
+  DateVoidCallback onClose,
   DateValueCallback onChange,
   DateValueCallback onConfirm,
 });
@@ -105,6 +107,7 @@ DatePickerWidget({
 /// dateFormat: [String] date format pattern
 /// locale: [DateTimePickerLocale] internationalization
 /// pickerTheme: [DateTimePickerTheme] the theme of date time picker
+/// minuteDivider: [int] minute restriction, e.g. 5: every 5th minute will be shown (0, 5, 10, 15 ...)
 /// onCancel: [DateVoidCallback] pressed title cancel widget event
 /// onChange: [DateValueCallback] selected date time changed event
 /// onConfirm: [DateValueCallback] pressed title confirm widget event
@@ -115,6 +118,7 @@ TimePickerWidget({
   String dateFormat: DATETIME_PICKER_DATE_FORMAT,
   DateTimePickerLocale locale: DATETIME_PICKER_LOCALE_DEFAULT,
   DateTimePickerTheme pickerTheme: DatePickerTheme.Default,
+  int minuteDivider: 1,
   DateVoidCallback onCancel,
   DateValueCallback onChange,
   DateValueCallback onConfirm,
@@ -153,29 +157,98 @@ DateTimePickerWidget({
 Support:
 
 - en_us: English (EN) United States ***[Default locale]***
-- zh_cn: Chinese (ZH) Simplified
-- pt_br: Portuguese (PT) Brazil
+- ar: Arabic (ar)
+- ar_eg: Arabic (ar) Egypt
+- bn: Bengali (BN)
+- bs: Bosnian (BS)
+- de: German (DE)
 - es: Spanish (ES)
+- fr: French (FR)
+- hr: Croatian (HR)
+- hu: Hungarian (HU)
+- in_id: Bahasa (IN) Indonesia
+- it: Italian (IT)
+- jp: Japanese (JP)
+- ko: Korea (KO)
+- nl: Dutch (NL)
+- pt_br: Portuguese (PT) Brazil
+- ro: Romanian (RO)
+- ru: Russian (RU)
+- sr_cyrl: Serbia (sr) Cyrillic
+- sr_latn: Serbia (sr) Latin
+- tr: Turkish (TR)
+- uk: Ukraine (UK)
+- vi: Vietnamese (VI) Vietnam
+- zh_cn: Chinese (ZH) Simplified
 
 ##### Add more language
 
-Fork this project, add language text in `lib/date_picker_i18n.dart` file.
+###### 1. Add language i18n file
+
+Fork this project, add language file in `lib/src/i18n/` directory, e.g. `strings_en_us.dart`.
 
 ```dart
-/// Done widget's text
-const Map<DateTimePickerLocale, String> DONE = { ... };
+/// English (EN) United States
+class _StringsEnUs extends _StringsI18n {
+  const _StringsEnUs();
 
-/// Cancel widget's text
-const Map<DateTimePickerLocale, String> CANCEL = { ... };
+  @override
+  String getCancelText() {
+    // TODO return cancel widget's text
+    return null;
+  }
 
-/// en_US
-const List<String> EN_US_MONTHS = [ ... ];
+  @override
+  String getDoneText() {
+    // TODO return done widget's text
+    return null;
+  }
 
-/// en_US weeks with full name
-const List<String> EN_US_WEEKS_FULL = [ ... ];
+  @override
+  List<String> getMonths() {
+    // TODO return the array of month's full name [January, February ... December]
+    return null;
+  }
 
-/// en_US weeks with short name
-const List<String> EN_US_WEEKS_SHORT = [ ... ];
+  @override
+  List<String> getMonthsShort() {
+    // TODO return the array of month's short name [Jan, Feb ... Dec]. If return null, will substring the full name (max length is 3)
+    return null;
+  }
+
+  @override
+  List<String> getWeeksFull() {
+    // TODO return the array of week's full name [Monday, Tuesday ... Sunday]
+    return null;
+  }
+
+  @override
+  List<String> getWeeksShort() {
+    // TODO return the array of week's short name [Mon, Tue ... Sun]
+    return null;
+  }
+}
+```
+
+###### 2. Add Locale
+
+Add language locale in `lib/src/i18n/date_picker_i18n.dart` file.
+
+```dart
+enum DateTimePickerLocale {
+  /// English (EN) United States
+  en_us,
+}
+```
+
+###### 3. Add Locale-Language relationship
+
+Add language-locale relationship in `lib/src/i18n/date_picker_i18n.dart` file.
+
+```dart
+const Map<DateTimePickerLocale, _StringsI18n> datePickerI18n = {
+  DateTimePickerLocale.en_us: const _StringsEnUs(),
+};
 ```
 
 #### 6\. dateFormat
@@ -203,7 +276,7 @@ const List<String> EN_US_WEEKS_SHORT = [ ... ];
 
 ##### Date Format Separator
 
-Support separator: `|,-._: `.
+Support separator: `|,-/\._: `.
 
 #### 7\. DateTimePickerTheme
 
@@ -240,9 +313,9 @@ const DateTimePickerTheme({
 
 [Example sources](https://github.com/wuzhendev/flutter-cupertino-date-picker/tree/master/example)
 
-[Example APK](https://raw.githubusercontent.com/wuzhendev/assets/master/flutter-datepicker/flutter_cupertino_date_picker_v1.0.0.apk)
+[Example APK](https://raw.githubusercontent.com/wuzhendev/assets/master/flutter-datepicker/flutter_cupertino_date_picker_v1.0.8.apk)
 
-![Example APK Download](https://github.com/wuzhendev/assets/blob/master/flutter-datepicker/date_picker_qrcode_v1.0.0.png?raw=true)
+![Example APK Download](https://github.com/wuzhendev/assets/blob/master/flutter-datepicker/date_picker_qrcode_v1.0.8.png?raw=true)
 
 ### DatePicker
 

@@ -14,7 +14,7 @@ Flutter 的日期选择器控件，iOS 样式。
 
 ```yaml
 dependencies:
-  flutter_cupertino_date_picker: ^1.0.0+1
+  flutter_cupertino_date_picker: ^1.0.25
 ```
 
 #### 2\. 获取包
@@ -30,7 +30,7 @@ $ flutter packages get
 在项目中导入该控件：
 
 ```dart
-import 'packages:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
+import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 ```
 
 #### 4\. 显示控件
@@ -50,6 +50,7 @@ import 'packages:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dar
 /// pickerMode: [DateTimePickerMode] 显示的类型: date(日期选择器)、time(时间选择器)、datetime(日期时间选择器)
 /// pickerTheme: [DateTimePickerTheme] 日期选择器的样式
 /// onCancel: [DateVoidCallback] 点击标题取消按钮的回调事件
+/// onClose: [DateVoidCallback] 关闭日期时间选择器的回调事件
 /// onChange: [DateValueCallback] 选择的日期时间改变的事件
 /// onConfirm: [DateValueCallback] 点击标题确定按钮的回调事件
 DatePicker.showDatePicker(
@@ -62,6 +63,7 @@ DatePicker.showDatePicker(
   DateTimePickerMode pickerMode: DateTimePickerMode.date,
   DateTimePickerTheme pickerTheme: DatePickerTheme.Default,
   DateVoidCallback onCancel,
+  DateVoidCallback onClose,
   DateValueCallback onChange,
   DateValueCallback onConfirm,
 });
@@ -105,6 +107,7 @@ DatePickerWidget({
 /// dateFormat: [String] 日期时间格式化
 /// locale: [DateTimePickerLocale] 国际化，语言地区
 /// pickerTheme: [DateTimePickerTheme] 日期选择器的样式
+/// minuteDivider: [int] minute restriction, e.g. 5: every 5th minute will be shown (0, 5, 10, 15 ...)
 /// onCancel: [DateVoidCallback] 点击标题取消按钮的回调事件
 /// onChange: [DateValueCallback] 选择的日期时间改变的事件
 /// onConfirm: [DateValueCallback] 点击标题确定按钮的回调事件
@@ -115,6 +118,7 @@ TimePickerWidget({
   String dateFormat: DATETIME_PICKER_DATE_FORMAT,
   DateTimePickerLocale locale: DATETIME_PICKER_LOCALE_DEFAULT,
   DateTimePickerTheme pickerTheme: DatePickerTheme.Default,
+  int minuteDivider: 1,
   DateVoidCallback onCancel,
   DateValueCallback onChange,
   DateValueCallback onConfirm,
@@ -153,29 +157,98 @@ DateTimePickerWidget({
 多语言支持:
 
 - en_us: 美式英语 ***[Default locale]***
-- zh_cn: 简体中文
-- pt_br: 葡萄牙语(巴西)
+- ar: 阿拉伯语
+- ar_eg: 阿拉伯语(埃及)
+- bn: 孟加拉语
+- bs: 波斯尼亚语
+- de: 德语
 - es: 西班牙语
+- fr: 法语
+- hr: 克罗地亚语
+- hu: 匈牙利语
+- in_id: 印尼语
+- it: 意大利语
+- jp: 日语
+- ko: 韩语
+- nl: 荷兰语
+- pt_br: 葡萄牙语(巴西)
+- ro: 罗马尼亚语
+- ru: 俄语
+- sr_cyrl: 塞尔维亚(西里尔)
+- sr_latn: 塞尔维亚(拉丁文)
+- tr: 土耳其语
+- uk: 乌克兰语
+- vi: 越南语
+- zh_cn: 简体中文
 
 ##### 添加更多的语言
 
-Fork 该项目, 在 `lib/date_picker_i18n.dart` 文件中添加语言对应的文字（标题栏按钮、月份、星期）.
+###### 1. 添加语言文件
+
+Fork 该项目, 在 `lib/src/i18n/` 文件夹中添加语言文件。参考 `strings_en_us.dart` 文件。
 
 ```dart
-/// Done widget's text
-const Map<DateTimePickerLocale, String> DONE = { ... };
+/// English (EN) United States
+class _StringsEnUs extends _StringsI18n {
+  const _StringsEnUs();
 
-/// Cancel widget's text
-const Map<DateTimePickerLocale, String> CANCEL = { ... };
+  @override
+  String getCancelText() {
+    // TODO 返回标题栏取消按钮的显示文字
+    return null;
+  }
 
-/// en_US
-const List<String> EN_US_MONTHS = [ ... ];
+  @override
+  String getDoneText() {
+    // TODO 返回标题栏确定按钮的显示文字
+    return null;
+  }
 
-/// en_US weeks with full name
-const List<String> EN_US_WEEKS_FULL = [ ... ];
+  @override
+  List<String> getMonths() {
+    // TODO 返回月份的全称 [1月, 2月 ... 12月]
+    return null;
+  }
 
-/// en_US weeks with short name
-const List<String> EN_US_WEEKS_SHORT = [ ... ];
+  @override
+  List<String> getMonthsShort() {
+    // TODO 返回月份的简称 [Jan, Feb ... Dec]，返回null默认对全程进行截取，最多截取3位
+    return null;
+  }
+
+  @override
+  List<String> getWeeksFull() {
+    // TODO 返回星期几的全称 [周一, 周二 ... 周日]
+    return null;
+  }
+
+  @override
+  List<String> getWeeksShort() {
+    // TODO 返回星期几的缩写 [周一, 周二 ... 周日]
+    return null;
+  }
+}
+```
+
+###### 2. 添加 DateTimePickerLocale
+
+在 `lib/src/i18n/date_picker_i18n.dart` 文件中添加新语言对应的 `DateTimePickerLocale`。
+
+```dart
+enum DateTimePickerLocale {
+  /// English (EN) United States
+  en_us,
+}
+```
+
+###### 3. 添加 DateTimePickerLocale 和语言的对应关系
+
+在 `lib/src/i18n/date_picker_i18n.dart` 文件中添加 DateTimePickerLocale 和语言的对应关系。
+
+```dart
+const Map<DateTimePickerLocale, _StringsI18n> datePickerI18n = {
+  DateTimePickerLocale.en_us: const _StringsEnUs(),
+};
 ```
 
 #### 6\. dateFormat
@@ -203,7 +276,7 @@ const List<String> EN_US_WEEKS_SHORT = [ ... ];
 
 ##### Date Format Separator
 
-支持的分隔符: `|,-._: `.
+支持的分隔符: `|,-/\._: `.
 
 #### 7\. DateTimePickerTheme
 
@@ -240,9 +313,9 @@ const DateTimePickerTheme({
 
 [Example sources](https://github.com/wuzhendev/flutter-cupertino-date-picker/tree/master/example)
 
-[Example APK](https://raw.githubusercontent.com/wuzhendev/assets/master/flutter-datepicker/flutter_cupertino_date_picker_v1.0.0.apk)
+[Example APK](https://raw.githubusercontent.com/wuzhendev/assets/master/flutter-datepicker/flutter_cupertino_date_picker_v1.0.8.apk)
 
-![Example APK Download](https://github.com/wuzhendev/assets/blob/master/flutter-datepicker/date_picker_qrcode_v1.0.0.png?raw=true)
+![Example APK Download](https://github.com/wuzhendev/assets/blob/master/flutter-datepicker/date_picker_qrcode_v1.0.8.png?raw=true)
 
 ### DatePicker
 

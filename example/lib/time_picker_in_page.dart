@@ -104,6 +104,7 @@ class _TimePickerInPageState extends State<TimePickerInPage> {
                 maxDateTime: DateTime.parse(MAX_DATETIME),
                 initDateTime: DateTime.parse(INIT_DATETIME),
                 dateFormat: DATE_FORMAT,
+                minuteDivider: 15,
                 pickerTheme: DateTimePickerTheme(
                     showTitle: false, backgroundColor: Color(0xFFe1bee7)),
                 onChange: (dateTime, selectedIndex) {
